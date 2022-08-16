@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <math.h>
 
 using std::string;
 using std::vector;
@@ -34,8 +35,14 @@ vector<string> process_queries(const vector<Query>& queries) {
     vector<string> result;
     // Keep list of all existing (i.e. not deleted yet) contacts.
     vector<Query> contacts;
-    for (size_t i = 0; i < queries.size(); ++i)
+    unsigned long long a = 34; unsigned long long b = 2; unsigned long long p = 10000019;
+    vector<string> hashTable(queries.size(), "not found");
+    unsigned long long hashValue;
+    for (size_t i = 0; i < queries.size(); ++i) {
+        hashValue = ((a * queries[i].number + b) % p) % queries.size();
         if (queries[i].type == "add") {
+            hashTable[hashValue] = queries[i].name;
+            /*
             bool was_founded = false;
             // if we already have contact with such number,
             // we should rewrite contact's name
@@ -48,13 +55,19 @@ vector<string> process_queries(const vector<Query>& queries) {
             // otherwise, just add it
             if (!was_founded)
                 contacts.push_back(queries[i]);
+                */
         } else if (queries[i].type == "del") {
+            hashTable[hashValue] = "not found";
+            /*
             for (size_t j = 0; j < contacts.size(); ++j)
                 if (contacts[j].number == queries[i].number) {
                     contacts.erase(contacts.begin() + j);
                     break;
                 }
+                */
         } else {
+            result.push_back(hashTable[hashValue]);
+            /*
             string response = "not found";
             for (size_t j = 0; j < contacts.size(); ++j)
                 if (contacts[j].number == queries[i].number) {
@@ -62,7 +75,9 @@ vector<string> process_queries(const vector<Query>& queries) {
                     break;
                 }
             result.push_back(response);
+             */
         }
+    }
     return result;
 }
 
