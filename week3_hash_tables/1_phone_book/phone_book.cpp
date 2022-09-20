@@ -2,6 +2,7 @@
 #include <vector>
 #include <string>
 #include <math.h>
+#include <bits/stdc++.h>
 
 using std::string;
 using std::vector;
@@ -35,13 +36,10 @@ vector<string> process_queries(const vector<Query>& queries) {
     vector<string> result;
     // Keep list of all existing (i.e. not deleted yet) contacts.
     vector<Query> contacts;
-    unsigned long long a = 34; unsigned long long b = 2; unsigned long long p = 10000019;
-    vector<string> hashTable(queries.size(), "not found");
-    unsigned long long hashValue;
+    std::unordered_map<long long, string> mp;
     for (size_t i = 0; i < queries.size(); ++i) {
-        hashValue = ((a * queries[i].number + b) % p) % queries.size();
         if (queries[i].type == "add") {
-            hashTable[hashValue] = queries[i].name;
+            mp[queries[i].number] = queries[i].name;
             /*
             bool was_founded = false;
             // if we already have contact with such number,
@@ -57,7 +55,7 @@ vector<string> process_queries(const vector<Query>& queries) {
                 contacts.push_back(queries[i]);
                 */
         } else if (queries[i].type == "del") {
-            hashTable[hashValue] = "not found";
+            mp.erase(queries[i].number);
             /*
             for (size_t j = 0; j < contacts.size(); ++j)
                 if (contacts[j].number == queries[i].number) {
@@ -66,7 +64,12 @@ vector<string> process_queries(const vector<Query>& queries) {
                 }
                 */
         } else {
-            result.push_back(hashTable[hashValue]);
+            if (mp.find(queries[i].number) != mp.end()) {
+                result.push_back(mp[queries[i].number]);
+            } else {
+                result.push_back("not found");
+            }
+
             /*
             string response = "not found";
             for (size_t j = 0; j < contacts.size(); ++j)
