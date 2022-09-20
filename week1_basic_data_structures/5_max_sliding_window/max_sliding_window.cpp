@@ -1,18 +1,41 @@
 #include <iostream>
 #include <vector>
+#include <bits/stdc++.h>
 
 using std::cin;
 using std::cout;
 using std::vector;
 using std::max;
+using std::endl;
 
 void max_sliding_window_naive(vector<int> const & A, int w) {
-    for (size_t i = 0; i < A.size() - w + 1; ++i) {
-        int window_max = A.at(i);
-        for (size_t j = i + 1; j < i + w; ++j)
-            window_max = max(window_max, A.at(j));
+    if (w > A.size()) {
+        cout << *max_element(A.begin(), A.end()) << " " << endl;
+        return;
+    }
 
-        cout << window_max << " ";
+    std::deque<int> dq;
+    int i = 0; int j = 0;
+    while (j < A.size()) {
+        int curr = A[j];
+        if (j-i+1 < w) {
+            while (!dq.empty() && curr > dq.back()) {
+                dq.pop_back();
+            }
+            dq.push_back(curr);
+            j++;
+        } else if (j-i+1 == w) {
+            while (!dq.empty() && curr > dq.back()) {
+                dq.pop_back();
+            }
+            dq.push_back(curr);
+            cout << dq.front() << " ";
+            if (A[i] == dq.front()) {
+                dq.pop_front();
+            }
+            i++;
+            j++;
+        }
     }
 
     return;

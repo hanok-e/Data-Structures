@@ -29,6 +29,22 @@ class HeapBuilder {
       cin >> data_[i];
   }
 
+  void heapify(int i) {
+      int minIdx = i;
+      int left = 2*i + 1;
+      int right = 2*i + 2;
+      if (left < data_.size() && data_[left] < data_[minIdx]) {
+          minIdx = left;
+      }
+      if (right < data_.size() && data_[right] < data_[minIdx]) {
+          minIdx = right;
+      }
+      if (minIdx != i) {
+          swaps_.push_back({i, minIdx});
+          swap(data_[i], data_[minIdx]);
+          heapify(minIdx);
+      }
+  }
   void GenerateSwaps() {
     swaps_.clear();
     // The following naive implementation just sorts 
@@ -38,6 +54,11 @@ class HeapBuilder {
     // but in the worst case gives a quadratic number of swaps.
     //
     // TODO: replace by a more efficient implementation
+    int idx = data_.size()/2 - 1;
+    for (int i = idx; i >= 0; i--) {
+        heapify(i);
+    }
+    /*
     for (int i = 0; i < data_.size(); ++i)
       for (int j = i + 1; j < data_.size(); ++j) {
         if (data_[i] > data_[j]) {
@@ -45,6 +66,7 @@ class HeapBuilder {
           swaps_.push_back(make_pair(i, j));
         }
       }
+      */
   }
 
  public:
